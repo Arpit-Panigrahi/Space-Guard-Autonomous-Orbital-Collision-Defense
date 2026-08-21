@@ -1,0 +1,92 @@
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 6%;
+    --secondary: 217 33% 14%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 14%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217 33% 16%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 16%;
+    --input: 217 33% 16%;
+    --ring: 217 91% 60%;
+    --radius: 2px;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply font-sans antialiased;
+    color-scheme: dark;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  body {
+    @apply bg-background text-foreground overflow-x-hidden;
+    background-color: #070B14;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+}
+
+@layer utilities {
+  .text-data {
+    @apply font-mono text-base tabular-nums;
+  }
+  
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+  }
+  
+  .glow-emerald {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+  }
+  
+  .glow-rose {
+    box-shadow: 0 0 20px rgba(244, 63, 94, 0.25);
+  }
+}
+
+/* Subtle Technical Ambient Mesh */
+.ambient-bg {
+  background-color: #070B14;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.06) 0px, transparent 50%);
+}
+
+/* Sleek Modern Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}

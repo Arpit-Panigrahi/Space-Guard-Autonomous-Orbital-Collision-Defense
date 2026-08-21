@@ -1,0 +1,29 @@
+services:
+  # 1. FastAPI Python Backend Service (100% Free)
+  - type: web
+    name: space-guard-backend
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn backend.app.api.main:app --host 0.0.0.0 --port $PORT"
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+
+  # 2. React 19 / Vite Frontend Static Site (100% Free)
+  - type: static
+    name: space-guard-frontend
+    buildCommand: "cd frontend && npm install && npm run build"
+    staticPublishPath: "./frontend/dist"
+    plan: free
+    routes:
+      - type: rewrite
+        source: "/*"
+        destination: "/index.html"
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: space-guard-backend
+          property: host
+
