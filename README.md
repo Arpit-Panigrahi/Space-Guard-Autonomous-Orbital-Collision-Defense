@@ -184,8 +184,8 @@ space-guard/
 ### 2. Backend Setup
 ```bash
 # Clone the repository
-git clone https://github.com/Arpit-Panigrahi/Space-Guard---Autonomous-Orbital-Collision-Defense.git
-cd Space-Guard---Autonomous-Orbital-Collision-Defense
+git clone https://github.com/Arpit-Panigrahi/Space-Guard-Autonomous-Orbital-Collision-Defense.git
+cd Space-Guard-Autonomous-Orbital-Collision-Defense
 
 # Create and activate virtual environment
 python3 -m venv venv
@@ -200,8 +200,10 @@ uvicorn backend.app.api.main:app --host 0.0.0.0 --port 8000 --reload
 
 ### 3. Frontend Setup
 ```bash
-# In a new terminal:
-cd frontend
+# In a new terminal (navigate to the project frontend directory):
+cd Space-Guard-Autonomous-Orbital-Collision-Defense/frontend
+# (or if already inside project directory): cd frontend
+
 npm install
 npm run dev
 ```
