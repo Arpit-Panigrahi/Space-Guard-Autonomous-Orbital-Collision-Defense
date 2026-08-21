@@ -11,12 +11,13 @@
 
 **A deterministic, physics-grounded platform for autonomous satellite conjunction risk assessment and Clohessy-Wiltshire maneuver planning in Low Earth Orbit.**
 
-[🚀 Getting Started](#-getting-started) · [🔭 Core Theory](#-core-theory) · [📐 Mathematical Formulation](#-mathematical-formulation) · [🏗️ Architecture](#️-architecture) · [🧪 2009 Collision Replay](#-2009-iridium-33--cosmos-2251-validation)
+[🌌 Vision](#vision) · [🔭 Core Theory](#core-theory) · [🏗️ Architecture](#architecture) · [🔬 Risk Matrix](#risk-matrix) · [🧪 2009 Replay](#validation) · [🖥️ Workstations](#workstations) · [🚀 Getting Started](#getting-started) · [🔌 API Reference](#api-reference)
 
 </div>
 
 ---
 
+<a id="vision"></a>
 ## 🌌 The Vision
 
 Space debris in Low Earth Orbit (LEO) is accumulating at an exponential rate. With over **27,000 catalogued objects** traveling at relative velocities up to **14 km/s**, hypervelocity orbital conjunctions represent a systemic threat to global space infrastructure. A single collision creates thousands of hypervelocity fragments, accelerating the cascading risk known as the **Kessler Syndrome**.
@@ -25,6 +26,7 @@ Space debris in Low Earth Orbit (LEO) is accumulating at an exponential rate. Wi
 
 ---
 
+<a id="core-theory"></a>
 ## 🔭 Core Theory
 
 Orbital mechanics behaves counter-intuitively compared to terrestrial navigation. To understand satellite collision avoidance, three fundamental concepts are key:
@@ -62,6 +64,7 @@ $$
 
 ---
 
+<a id="architecture"></a>
 ## 🏗️ Architecture & Pipeline
 
 ```
@@ -100,6 +103,7 @@ $$
 
 ---
 
+<a id="risk-matrix"></a>
 ## 🔬 Risk Classification Matrix
 
 | Risk Tier | Collision Probability ($P_c$) | Miss Distance | Action Protocol |
@@ -111,6 +115,7 @@ $$
 
 ---
 
+<a id="validation"></a>
 ## 🧪 2009 Iridium 33 / Cosmos 2251 Validation
 
 On **February 10, 2009 at 16:56 UTC**, the operational communications satellite **Iridium 33** and the decommissioned Russian satellite **Cosmos 2251** collided at an altitude of $789\text{ km}$ over Taymyr Peninsula, Siberia at a relative velocity of $14.1\text{ km/s}$, producing over $2,000$ trackable debris fragments.
@@ -123,6 +128,7 @@ Space-Guard was backtested against historical pre-collision TLEs (epoch `09041`)
 
 ---
 
+<a id="workstations"></a>
 ## 🖥️ Interactive Workstations & Laboratories
 
 | Route | Workstation | Capabilities |
@@ -139,6 +145,7 @@ Space-Guard was backtested against historical pre-collision TLEs (epoch `09041`)
 
 ---
 
+<a id="repository-structure"></a>
 ## 📁 Repository Structure
 
 ```
@@ -167,6 +174,7 @@ space-guard/
 
 ---
 
+<a id="getting-started"></a>
 ## 🚀 Getting Started
 
 ### 1. Prerequisites
@@ -202,6 +210,7 @@ Visit **`http://localhost:5173`** for the full interactive React experience, or 
 
 ---
 
+<a id="api-reference"></a>
 ## 🔌 API Reference
 
 | Method | Endpoint | Description |
@@ -214,6 +223,7 @@ Visit **`http://localhost:5173`** for the full interactive React experience, or 
 
 ---
 
+<a id="license"></a>
 ## 📜 License
 
 MIT License — see [LICENSE](LICENSE) for full details.
