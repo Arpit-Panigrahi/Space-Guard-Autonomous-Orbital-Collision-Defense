@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Space-Guard Banner](https://img.shields.io/badge/Space--Guard-v2.1.0-00ff88?style=for-the-badge)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-space--guard-00ff88?style=for-the-badge&logo=vercel&logoColor=white)](https://space-guard-collision-mitigate.vercel.app/)
 ![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
@@ -11,7 +11,9 @@
 
 **A deterministic, physics-grounded platform for autonomous satellite conjunction risk assessment and Clohessy-Wiltshire maneuver planning in Low Earth Orbit.**
 
-[🌌 Vision](#vision) · [🔭 Core Theory](#core-theory) · [🏗️ Architecture](#architecture) · [🔬 Risk Matrix](#risk-matrix) · [🧪 2009 Replay](#validation) · [🖥️ Workstations](#workstations) · [🚀 Getting Started](#getting-started) · [🔌 API Reference](#api-reference)
+🌐 **Live Application:** **[https://space-guard-collision-mitigate.vercel.app](https://space-guard-collision-mitigate.vercel.app/)**
+
+[🌐 Live Demo](https://space-guard-collision-mitigate.vercel.app/) · [🌌 Vision](#vision) · [🔭 Core Theory](#core-theory) · [🏗️ Architecture](#architecture) · [🔬 Risk Matrix](#risk-matrix) · [🧪 2009 Replay](#validation) · [🖥️ Workstations](#workstations) · [🚀 Getting Started](#getting-started) · [🔌 API Reference](#api-reference)
 
 </div>
 
@@ -176,6 +178,13 @@ space-guard/
 
 <a id="getting-started"></a>
 ## 🚀 Getting Started
+
+### 🌐 Live Production Application
+The platform is deployed live on Vercel: **[https://space-guard-collision-mitigate.vercel.app](https://space-guard-collision-mitigate.vercel.app/)**
+
+---
+
+### 💻 Local Development Setup
 
 ### 1. Prerequisites
 - Python 3.11+
