@@ -162,7 +162,19 @@ def _run_live_scan() -> Dict[str, Any]:
 # Endpoints
 # ─────────────────────────────────────────────────────────────────────────────
 
+@app.get("/")
+def root_check():
+    return {
+        "status": "ok",
+        "service": "Space-Guard Orbital Collision Defense API",
+        "version": "2.1.0",
+        "ml_model_ready": ml_triage_model.is_trained,
+        "data_as_of": datetime.now(timezone.utc).isoformat(),
+    }
+
+
 @app.get("/health")
+@app.get("/api/health")
 def health_check():
     return {
         "status": "ok",
@@ -174,6 +186,7 @@ def health_check():
 
 
 @app.post("/scan")
+@app.post("/api/scan")
 async def trigger_scan():
     """
     Primary scan endpoint. Runs the full conjunction pipeline on a cached
