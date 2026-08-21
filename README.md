@@ -30,13 +30,16 @@ Space debris in Low Earth Orbit (LEO) is accumulating at an exponential rate. Wi
 Orbital mechanics behaves counter-intuitively compared to terrestrial navigation. To understand satellite collision avoidance, three fundamental concepts are key:
 
 ### 1. The B-Plane Encounter Cross-Section
-When two satellites pass at their **Time of Closest Approach (TCA)**, the encounter occurs over mere milliseconds due to extreme relative velocities ($v_{\text{rel}} \approx 10\text{--}15\text{ km/s}$). We project the encounter geometry onto the **B-Plane** (a 2D plane perpendicular to the relative velocity vector $\vec{v}_{\text{rel}}$ passing through the target satellite). The 3D relative miss vector projects directly onto this plane as a 2D displacement $\vec{b} = (\xi, \zeta)$.
+When two satellites pass at their **Time of Closest Approach (TCA)**, the encounter occurs over mere milliseconds due to extreme relative velocities ($v_{\text{rel}} \approx 10 \text{ to } 15 \text{ km/s}$). We project the encounter geometry onto the **B-Plane** (a 2D plane perpendicular to the relative velocity vector $\vec{v}_{\text{rel}}$ passing through the target satellite). The 3D relative miss vector projects directly onto this plane as a 2D displacement $\vec{b} = (\xi, \zeta)$.
 
 ### 2. Gaussian Probability of Collision ($P_c$)
-Because satellite positions are derived from tracking observations (e.g., Two-Line Element sets with typical positional uncertainty $\sigma \approx 500\text{ m}$), satellite positions are represented as 3D Gaussian random variables. Projected onto the 2D B-Plane, this forms a 2D Gaussian probability density function $\mathcal{N}(\vec{b}, \mathbf{C}_{2D})$. 
+Because satellite positions are derived from tracking observations (e.g., Two-Line Element sets with typical positional uncertainty $\sigma \approx 500\text{ m}$), satellite positions are represented as 3D Gaussian random variables. Projected onto the 2D B-Plane, this forms a 2D Gaussian probability density function $\mathcal{N}(\vec{b}, \mathbf{C}_{\text{2D}})$. 
 
 The analytic probability of collision ($P_c$) is the exact integral of this distribution over a disk of radius equal to the combined **Hard-Body Radius** ($\text{HBR} = 10\text{ m}$):
-$$P_c = \frac{1}{2\pi \sigma_\xi \sigma_\zeta \sqrt{1 - \rho^2}} \iint_{\xi^2 + \zeta^2 \le \text{HBR}^2} \exp\left( -\frac{1}{2(1-\rho^2)}\left[ \frac{(\xi - x_m)^2}{\sigma_\xi^2} - \frac{2\rho(\xi - x_m)(\zeta - y_m)}{\sigma_\xi \sigma_\zeta} + \frac{(\zeta - y_m)^2}{\sigma_\zeta^2} \right] \right) d\xi\, d\zeta$$
+
+$$
+P_c = \frac{1}{2\pi \sigma_\xi \sigma_\zeta \sqrt{1 - \rho^2}} \iint_{\xi^2 + \zeta^2 \le \text{HBR}^2} \exp\left( -\frac{1}{2(1-\rho^2)}\left[ \frac{(\xi - x_m)^2}{\sigma_\xi^2} - \frac{2\rho(\xi - x_m)(\zeta - y_m)}{\sigma_\xi \sigma_\zeta} + \frac{(\zeta - y_m)^2}{\sigma_\zeta^2} \right] \right) \, d\xi\, d\zeta
+$$
 
 Using the **Foster/Alfano** isotropic formulation, this computes in under **10 microseconds** per candidate pair.
 
@@ -44,10 +47,16 @@ Using the **Foster/Alfano** isotropic formulation, this computes in under **10 m
 When $P_c$ exceeds the critical threshold ($10^{-4}$), the satellite must execute an impulsive thrust burn ($\Delta \vec{v}$). In a circular LEO orbit, relative orbital motion under gravity is governed by the **Clohessy-Wiltshire (CW) equations**. 
 
 The velocity-to-position block $\mathbf{\Phi}_{rv}(\Delta t)$ of the State Transition Matrix maps a velocity change $\Delta \vec{v}$ executed at $\Delta t$ before TCA into a positional displacement $\Delta \vec{r}_{\text{TCA}}$ at TCA:
-$$\Delta \vec{r}_{\text{TCA}} = \mathbf{\Phi}_{rv}(\Delta t) \cdot \Delta \vec{v}$$
+
+$$
+\Delta \vec{r}_{\text{TCA}} = \mathbf{\Phi}_{rv}(\Delta t) \cdot \Delta \vec{v}
+$$
 
 By taking the **Singular Value Decomposition (SVD)** of $\mathbf{\Phi}_{rv} = \mathbf{U} \mathbf{\Sigma} \mathbf{V}^T$, the principal right-singular vector $\vec{v}_1$ yields the mathematically optimal burn direction to maximize separation per unit of propellant spent:
-$$\Delta \vec{v}_{\text{opt}} = \|\Delta v\| \cdot \vec{v}_1$$
+
+$$
+\Delta \vec{v}_{\text{opt}} = \|\Delta v\| \cdot \vec{v}_1
+$$
 
 > **The Power of Early Action:** Because $\mathbf{\Phi}_{rv}$ scales with time, a $1\text{ m/s}$ burn applied **24 hours before TCA** achieves approximately **$14\times$ greater miss distance** than the exact same burn applied 1 hour before TCA.
 
@@ -96,8 +105,8 @@ $$\Delta \vec{v}_{\text{opt}} = \|\Delta v\| \cdot \vec{v}_1$$
 | Risk Tier | Collision Probability ($P_c$) | Miss Distance | Action Protocol |
 |:---|:---|:---|:---|
 | 🔴 **Critical** | $P_c > 10^{-4}$ | $< 1\text{ km}$ | Compute impulsive $\Delta \vec{v}$ burn & trigger emergency alert |
-| 🟠 **High** | $10^{-5} < P_c \le 10^{-4}$ | $1\text{--}5\text{ km}$ | Active tracking, candidate burn solution generated |
-| 🟡 **Moderate** | $10^{-6} < P_c \le 10^{-5}$ | $5\text{--}25\text{ km}$ | Elevated monitoring window |
+| 🟠 **High** | $10^{-5} < P_c \le 10^{-4}$ | $1 \text{ to } 5\text{ km}$ | Active tracking, candidate burn solution generated |
+| 🟡 **Moderate** | $10^{-6} < P_c \le 10^{-5}$ | $5 \text{ to } 25\text{ km}$ | Elevated monitoring window |
 | 🟢 **Nominal** | $P_c \le 10^{-6}$ | $> 25\text{ km}$ | Standard catalog propagation |
 
 ---
@@ -167,8 +176,8 @@ space-guard/
 ### 2. Backend Setup
 ```bash
 # Clone the repository
-git clone https://github.com/Arpit-Panigrahi/Space-Guard-Autonomous-Orbital-Collision-Defense.git
-cd Space-Guard-Autonomous-Orbital-Collision-Defense
+git clone https://github.com/Arpit-Panigrahi/Space-Guard---Autonomous-Orbital-Collision-Defense.git
+cd Space-Guard---Autonomous-Orbital-Collision-Defense
 
 # Create and activate virtual environment
 python3 -m venv venv
@@ -184,7 +193,7 @@ uvicorn backend.app.api.main:app --host 0.0.0.0 --port 8000 --reload
 ### 3. Frontend Setup
 ```bash
 # In a new terminal:
-cd space-guard/frontend
+cd frontend
 npm install
 npm run dev
 ```
