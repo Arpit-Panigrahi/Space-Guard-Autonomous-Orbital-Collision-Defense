@@ -298,12 +298,42 @@ export default function Globe3D({
   const isPlayingRef = useRef(isPlaying);
   const simSpeedRef = useRef(simSpeed);
   const simProgressRef = useRef(simProgress);
+  const currentPhaseRef = useRef('GLOBAL');
+  const [isMobileRender] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const isCoarsePointer = window.matchMedia?.('(pointer: coarse)').matches ?? false;
+    const isSmallScreen = window.matchMedia?.('(max-width: 900px)').matches ?? false;
+    const lowCpuCores = (navigator.hardwareConcurrency || 8) <= 4;
+    return isCoarsePointer || isSmallScreen || lowCpuCores;
+  });
+  const qualityProfile = isMobileRender
+    ? {
+        antialias: false,
+        maxPixelRatio: 1.25,
+        earthSegments: 40,
+        cloudsSegments: 28,
+        orbitSegments: 32,
+        simTrackSegments: 72,
+        maxLiveSatellites: 40,
+        debrisFragments: 120
+      }
+    : {
+        antialias: true,
+        maxPixelRatio: 2,
+        earthSegments: 64,
+        cloudsSegments: 48,
+        orbitSegments: 64,
+        simTrackSegments: 128,
+        maxLiveSatellites: 100,
+        debrisFragments: 220
+      };
 
   const handleModeSelect = (newMode) => {
     sound.playClick();
     setSimMode(newMode);
     setSimProgress(0);
     setIsPlaying(true);
+    currentPhaseRef.current = 'GLOBAL';
     setCurrentPhase('GLOBAL');
 
     // Reset camera targets immediately
@@ -352,12 +382,12 @@ export default function Globe3D({
     let renderer;
     try {
       renderer = new THREE.WebGLRenderer({
-        antialias: true,
+        antialias: qualityProfile.antialias,
         alpha: false,
         powerPreference: 'high-performance'
       });
       renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, qualityProfile.maxPixelRatio));
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.45;
 
@@ -402,7 +432,7 @@ export default function Globe3D({
     const bumpTex = loader.load(NASA_EARTH_TOPOLOGY);
     const specTex = loader.load(NASA_EARTH_SPECULAR);
 
-    const earthGeom = new THREE.SphereGeometry(earthRadius, 64, 64);
+    const earthGeom = new THREE.SphereGeometry(earthRadius, qualityProfile.earthSegments, qualityProfile.earthSegments);
     const earthMat = new THREE.MeshStandardMaterial({
       map: dayTex,
       bumpMap: bumpTex,
@@ -419,7 +449,7 @@ export default function Globe3D({
 
     // Rotating Atmosphere Clouds
     const cloudsTex = loader.load(NASA_EARTH_CLOUDS);
-    const cloudsGeom = new THREE.SphereGeometry(earthRadius * 1.018, 48, 48);
+    const cloudsGeom = new THREE.SphereGeometry(earthRadius * 1.018, qualityProfile.cloudsSegments, qualityProfile.cloudsSegments);
     const cloudsMat = new THREE.MeshStandardMaterial({
       map: cloudsTex,
       transparent: true,
@@ -446,7 +476,7 @@ export default function Globe3D({
     debrisGroupRef.current = debrisGroup;
 
     // Detonation Flash Fireball Sphere
-    const flashGeom = new THREE.SphereGeometry(1.2, 32, 32);
+    const flashGeom = new THREE.SphereGeometry(1.2, qualityProfile.cloudsSegments, qualityProfile.cloudsSegments);
     const flashMat = new THREE.MeshBasicMaterial({
       color: 0xffdd44,
       transparent: true,
@@ -558,9 +588,15 @@ export default function Globe3D({
           const inBurnWindow = curMode === 'avoidance_2009' && currentProg >= 0.15 && currentProg <= 0.48;
           const inBPlaneTopWindow = curMode === 'avoidance_2009' && currentProg >= 0.68 && currentProg <= 0.95;
           
-          if (inBurnWindow) setCurrentPhase('STAGE_1_BURN');
-          else if (inBPlaneTopWindow) setCurrentPhase('STAGE_3_BPLANE');
-          else setCurrentPhase('GLOBAL');
+          const nextPhase = inBurnWindow
+            ? 'STAGE_1_BURN'
+            : inBPlaneTopWindow
+            ? 'STAGE_3_BPLANE'
+            : 'GLOBAL';
+          if (currentPhaseRef.current !== nextPhase) {
+            currentPhaseRef.current = nextPhase;
+            setCurrentPhase(nextPhase);
+          }
 
           if (isPlayingRef.current) {
             const speedMultiplier = simSpeedRef.current;
@@ -763,7 +799,7 @@ export default function Globe3D({
         rendererRef.current.dispose();
       }
     };
-  }, []);
+  }, [isMobileRender]);
 
   // ───────────────────────────────────────────────────────────────────────────
   // 2. Build Clean, Uncluttered Orbits and High-Detail Satellites
@@ -778,7 +814,7 @@ export default function Globe3D({
     const earthRadius = 6.378;
 
     if (simMode === 'live') {
-      const displaySats = objects && objects.length > 0 ? objects.slice(0, 100) : [
+      const displaySats = objects && objects.length > 0 ? objects.slice(0, qualityProfile.maxLiveSatellites) : [
         { norad_id: 25544, name: 'ISS (ZARYA)', position_km: [6154, -2108, -1971] },
         { norad_id: 24946, name: 'IRIDIUM 33', position_km: [7100, 120, -450] },
         { norad_id: 22675, name: 'COSMOS 2251', position_km: [7100, 120, -450] },
@@ -807,8 +843,8 @@ export default function Globe3D({
 
         if (isSpecial || i < 8) {
           const curvePts = [];
-          for (let a = 0; a <= 64; a++) {
-            const theta = (a / 64) * Math.PI * 2;
+          for (let a = 0; a <= qualityProfile.orbitSegments; a++) {
+            const theta = (a / qualityProfile.orbitSegments) * Math.PI * 2;
             curvePts.push(new THREE.Vector3(
               rNorm * Math.cos(theta),
               0,
@@ -851,8 +887,8 @@ export default function Globe3D({
       if (simMode === 'avoidance_2009') {
         // Pre-Burn Collision Track (Dashed Amber Orbit)
         const preBurnPts = [];
-        for (let a = 0; a <= 128; a++) {
-          const theta = (a / 128) * Math.PI * 2;
+        for (let a = 0; a <= qualityProfile.simTrackSegments; a++) {
+          const theta = (a / qualityProfile.simTrackSegments) * Math.PI * 2;
           const pt = new THREE.Vector3()
             .copy(uNode).multiplyScalar(encDist * Math.cos(theta))
             .addScaledVector(v1, encDist * Math.sin(theta));
@@ -874,8 +910,8 @@ export default function Globe3D({
         // Post-Burn Cleared Trajectory (Solid Glowing Green Track: +4.83 km clearance)
         const postBurnDist = encDist + 0.45;
         const postBurnPts = [];
-        for (let a = 0; a <= 128; a++) {
-          const theta = (a / 128) * Math.PI * 2;
+        for (let a = 0; a <= qualityProfile.simTrackSegments; a++) {
+          const theta = (a / qualityProfile.simTrackSegments) * Math.PI * 2;
           const pt = new THREE.Vector3()
             .copy(uNode).multiplyScalar(postBurnDist * Math.cos(theta))
             .addScaledVector(v1, postBurnDist * Math.sin(theta));
@@ -919,8 +955,8 @@ export default function Globe3D({
       } else {
         // Collision Polar Track
         const iridPts = [];
-        for (let a = 0; a <= 128; a++) {
-          const theta = (a / 128) * Math.PI * 2;
+        for (let a = 0; a <= qualityProfile.simTrackSegments; a++) {
+          const theta = (a / qualityProfile.simTrackSegments) * Math.PI * 2;
           const pt = new THREE.Vector3()
             .copy(uNode).multiplyScalar(encDist * Math.cos(theta))
             .addScaledVector(v1, encDist * Math.sin(theta));
@@ -933,8 +969,8 @@ export default function Globe3D({
 
       // Cosmos 2251 Orbit (Red 74° Track)
       const cosPts = [];
-      for (let a = 0; a <= 128; a++) {
-        const theta = (a / 128) * Math.PI * 2;
+      for (let a = 0; a <= qualityProfile.simTrackSegments; a++) {
+        const theta = (a / qualityProfile.simTrackSegments) * Math.PI * 2;
         const pt = new THREE.Vector3()
           .copy(uNode).multiplyScalar(encDist * Math.cos(theta))
           .addScaledVector(v2, encDist * Math.sin(theta));
@@ -973,7 +1009,7 @@ export default function Globe3D({
 
       // Kinetic Debris Fragments (for 2009 Collision)
       if (simMode === 'collision_2009') {
-        const numFragments = 220;
+        const numFragments = qualityProfile.debrisFragments;
         const fragGeom = new THREE.BoxGeometry(0.045, 0.045, 0.045);
         const fragMat = new THREE.MeshStandardMaterial({
           color: 0xff3b30,
@@ -1001,7 +1037,7 @@ export default function Globe3D({
         debrisGroupRef.current.visible = false;
       }
     }
-  }, [simMode, showBPlane3D, objects]);
+  }, [simMode, showBPlane3D, objects, isMobileRender]);
 
   const handleResetCamera = () => {
     sound.playClick();
