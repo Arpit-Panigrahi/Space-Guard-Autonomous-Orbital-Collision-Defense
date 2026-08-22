@@ -52,25 +52,25 @@ export default function Navbar({ backendStatus, dataAsOf }) {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#070b14]/85 backdrop-blur-xl border-b border-white/[0.08] transition-all select-none">
-      <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-3 sm:px-6 lg:px-8">
         
         {/* ── 1. BRAND LOGO (with generous right margin & subtle divider) ── */}
-        <div className="flex items-center gap-6 lg:gap-10 shrink-0">
+        <div className="flex items-center gap-3 sm:gap-6 lg:gap-10 shrink-0 min-w-0">
           <Link 
             to="/" 
             onClick={() => sound.playClick()}
-            className="flex items-center gap-3.5 group py-1"
+            className="flex items-center gap-2.5 sm:gap-3.5 group py-1 min-w-0"
           >
             <div className="relative flex items-center justify-center size-9 rounded-sm bg-primary/10 border border-primary/25 text-primary group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary group-hover:shadow-[0_0_16px_rgba(59,130,246,0.4)] transition-all duration-300">
               <Orbit className="size-5 transition-transform duration-500 group-hover:rotate-90" />
               <span className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-[15px] font-bold tracking-tight text-white group-hover:text-primary transition-colors font-sans">
+                <span className="text-[14px] sm:text-[15px] font-bold tracking-tight text-white group-hover:text-primary transition-colors font-sans truncate">
                   SPACE-GUARD
                 </span>
-                <span className="text-[10px] font-mono font-semibold px-1.5 py-0.2 rounded-xs bg-white/[0.06] text-muted-foreground border border-white/[0.08]">
+                <span className="hidden sm:inline text-[10px] font-mono font-semibold px-1.5 py-0.2 rounded-xs bg-white/[0.06] text-muted-foreground border border-white/[0.08]">
                   v2.1
                 </span>
               </div>
@@ -112,7 +112,7 @@ export default function Navbar({ backendStatus, dataAsOf }) {
         </nav>
 
         {/* ── 3. RIGHT ACTION CONTROLS ── */}
-        <div className="flex items-center gap-3 shrink-0 pl-2">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 pl-2">
           {/* Live Telemetry Beacon */}
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xs bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-muted-foreground">
             <span
@@ -154,7 +154,7 @@ export default function Navbar({ backendStatus, dataAsOf }) {
 
       {/* ── 4. RESPONSIVE MOBILE NAVIGATION DRAWER ── */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-white/[0.08] bg-[#070b14]/95 backdrop-blur-2xl px-4 py-3 animate-fade-in space-y-1">
+        <div className="lg:hidden border-t border-white/[0.08] bg-[#070b14]/95 backdrop-blur-2xl px-3 sm:px-4 py-3 animate-fade-in space-y-1">
           <div className="flex items-center justify-between px-3 py-2 text-xs font-mono text-muted-foreground border-b border-white/[0.06] mb-2">
             <span>SYSTEM STATUS</span>
             <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
@@ -163,7 +163,7 @@ export default function Navbar({ backendStatus, dataAsOf }) {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
             {navLinks.map((item) => {
               const Icon = item.icon;
               return (

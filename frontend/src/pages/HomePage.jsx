@@ -140,7 +140,7 @@ export default function HomePage({ backendStatus, scanData }) {
           HERO — Full-screen landing section
       ═══════════════════════════════════════════════════════ */}
       <FadeIn>
-        <section className="relative min-h-[85vh] flex flex-col justify-center gap-10 pt-8 pb-16 border-b border-border/60">
+        <section className="relative min-h-[75vh] sm:min-h-[85vh] flex flex-col justify-center gap-8 sm:gap-10 pt-6 sm:pt-8 pb-14 sm:pb-16 border-b border-border/60">
 
           {/* Top label row */}
           <div className="flex flex-wrap items-center gap-2.5">
@@ -153,8 +153,8 @@ export default function HomePage({ backendStatus, scanData }) {
           </div>
 
           {/* Hero headline */}
-          <div className="space-y-6 max-w-5xl">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] text-foreground">
+          <div className="space-y-5 sm:space-y-6 max-w-5xl">
+            <h1 className="text-3xl min-[420px]:text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] text-foreground">
               <BlurText
                 text="Autonomous Orbital Collision"
                 delay={30}
@@ -166,28 +166,28 @@ export default function HomePage({ backendStatus, scanData }) {
                 className="block text-primary"
               />
             </h1>
-            <p className="text-muted-foreground text-lg sm:text-2xl leading-relaxed max-w-3xl">
+            <p className="text-muted-foreground text-base sm:text-2xl leading-relaxed max-w-3xl">
               A rigorous, physics-first system for detecting and preventing satellite collisions in Low Earth Orbit —
               built from orbital mechanics fundamentals, not heuristics.
             </p>
           </div>
 
           {/* CTA buttons */}
-          <div className="flex flex-wrap items-center gap-4 pt-1">
-            <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg rounded-sm h-12 px-7 text-base">
+          <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 pt-1">
+            <Button asChild size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg rounded-sm h-11 sm:h-12 px-5 sm:px-7 text-sm sm:text-base">
               <Link to="/screening" onClick={() => sound.playClick()}>
                 <Activity className="size-5 mr-2.5" />
                 Launch Screening
                 <ArrowRight className="size-5 ml-2.5" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-border/80 hover:bg-accent/60 font-semibold rounded-sm h-12 px-7 text-base">
+            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto border-border/80 hover:bg-accent/60 font-semibold rounded-sm h-11 sm:h-12 px-5 sm:px-7 text-sm sm:text-base">
               <Link to="/docs" onClick={() => sound.playClick()}>
                 <BookOpen className="size-5 mr-2.5 text-primary" />
                 Read the Theory
               </Link>
             </Button>
-            <Button asChild variant="ghost" size="lg" className="text-muted-foreground hover:text-foreground font-semibold rounded-sm h-12 px-7 text-base">
+            <Button asChild variant="ghost" size="lg" className="w-full sm:w-auto text-muted-foreground hover:text-foreground font-semibold rounded-sm h-11 sm:h-12 px-5 sm:px-7 text-sm sm:text-base">
               <Link to="/historical" onClick={() => sound.playClick()}>
                 <History className="size-5 mr-2.5 text-rose-400" />
                 2009 Replay Lab
@@ -196,14 +196,14 @@ export default function HomePage({ backendStatus, scanData }) {
           </div>
 
           {/* Telemetry stat strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4">
+          <div className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-4 gap-4 pt-4">
             {[
               { label: 'Tracked objects', value: <CountUp to={27000} separator="," suffix="+" duration={1.5} />, sub: 'Active LEO debris', color: 'text-foreground' },
               { label: 'Closing velocity', value: <CountUp to={14.1} decimals={1} suffix=" km/s" duration={1.8} />, sub: 'Head-on scenario', color: 'text-foreground' },
               { label: 'Pc latency', value: '< 10 µs', sub: 'Per candidate pair', color: 'text-emerald-400' },
               { label: 'Fuel efficiency', value: <CountUp to={14} suffix="×" duration={1.4} />, sub: 'At 24h prior burn', color: 'text-primary' },
             ].map((stat, i) => (
-              <div key={i} className="border border-border/80 bg-card/60 backdrop-blur-md p-5 flex flex-col justify-between rounded-sm">
+              <div key={i} className="border border-border/80 bg-card/60 backdrop-blur-md p-4 sm:p-5 flex flex-col justify-between rounded-sm">
                 <span className="text-xs text-muted-foreground font-semibold font-mono uppercase tracking-wider">{stat.label}</span>
                 <div className={`text-3xl sm:text-4xl font-bold tracking-tight font-mono mt-2 ${stat.color}`}>
                   {stat.value}

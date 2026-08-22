@@ -86,7 +86,7 @@ export default function CatalogExplorer({ onSelectObject }) {
         </div>
       </CardHeader>
 
-      <CardContent className="p-6 space-y-4">
+      <CardContent className="p-4 sm:p-6 space-y-4">
         {/* Search Input Bar */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -101,7 +101,7 @@ export default function CatalogExplorer({ onSelectObject }) {
 
         {/* Table */}
         <div className="overflow-x-auto rounded-sm border border-border/80 bg-background/60">
-          <table className="w-full text-left text-xs font-sans">
+          <table className="w-full min-w-[780px] text-left text-xs font-sans">
             <thead className="bg-secondary/30 text-muted-foreground border-b border-border/80 text-[11px] uppercase font-mono tracking-wider">
               <tr>
                 <th className="py-3 px-4">NORAD ID</th>

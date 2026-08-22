@@ -83,14 +83,14 @@ export default function ScanDashboard({
   return (
     <div className="flex flex-col gap-6 font-sans text-foreground">
       {/* Top Banner / Initiate Scan Bar */}
-      <div className="p-6 sm:p-8 rounded-sm border border-border/80 bg-card/60 backdrop-blur-md flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
+      <div className="p-4 sm:p-8 rounded-sm border border-border/80 bg-card/60 backdrop-blur-md flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
+        <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
           <div className="size-12 rounded-sm bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
             <Radar className={`size-6 ${isScanning ? 'animate-spin' : ''}`} />
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+              <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground">
                 Conjunction Screening & Triage Center
               </h1>
               <Badge variant="outline" className="font-mono text-xs border-primary/30 text-primary">
@@ -103,7 +103,7 @@ export default function ScanDashboard({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 w-full lg:w-auto">
           <Button
             onClick={() => {
               sound.playRadarPing();
@@ -111,7 +111,7 @@ export default function ScanDashboard({
             }}
             disabled={isScanning}
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md transition-all h-11 px-5 text-sm cursor-pointer"
+            className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md transition-all h-11 px-5 text-sm cursor-pointer"
           >
             <Activity className={`size-4 mr-2 ${isScanning ? 'animate-spin' : ''}`} />
             <span>{isScanning ? 'Scanning 24h Window...' : 'Run Conjunction Scan'}</span>
@@ -122,7 +122,7 @@ export default function ScanDashboard({
               variant="outline"
               size="lg"
               onClick={handleExportReport}
-              className="border-border hover:bg-accent/60 text-sm h-11 px-4"
+              className="w-full sm:w-auto border-border hover:bg-accent/60 text-sm h-11 px-4"
             >
               <Download className="size-4 mr-2 text-primary" />
               <span>Export JSON</span>
@@ -208,7 +208,7 @@ export default function ScanDashboard({
               ))}
             </div>
 
-            <div className="relative w-full sm:w-auto">
+            <div className="relative w-full sm:w-auto sm:min-w-[224px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <input
                 type="text"
@@ -248,25 +248,25 @@ export default function ScanDashboard({
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       {/* Satellite Pair */}
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-start gap-3 sm:gap-4 min-w-0">
                         <div className={`size-10 rounded-xs flex items-center justify-center shrink-0 ${
                           isCrit ? 'bg-destructive/15 text-destructive border border-destructive/30' : 'bg-primary/10 text-primary border border-primary/20'
                         }`}>
                           {isCrit ? <Flame className="size-5" /> : <Radar className="size-5" />}
                         </div>
 
-                        <div className="space-y-1">
+                        <div className="space-y-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-base text-foreground tracking-tight">
+                            <span className="font-bold text-sm sm:text-base text-foreground tracking-tight break-words">
                               {ev.target_id}
                             </span>
                             <span className="text-muted-foreground font-mono text-xs">×</span>
-                            <span className="font-semibold text-sm text-muted-foreground tracking-tight">
+                            <span className="font-semibold text-xs sm:text-sm text-muted-foreground tracking-tight break-words">
                               {ev.chaser_id}
                             </span>
                           </div>
 
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground font-mono">
+                          <div className="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-1 text-[11px] sm:text-xs text-muted-foreground font-mono">
                             <span>TCA: <strong className="text-foreground font-normal">{ev.tca_utc}</strong></span>
                             <span>·</span>
                             <span>Miss: <strong className="text-foreground font-bold">{formatDistance(ev.miss_distance_km)}</strong></span>
@@ -275,7 +275,7 @@ export default function ScanDashboard({
                       </div>
 
                       {/* Right Telemetry & Badges */}
-                      <div className="flex items-center gap-4 self-end sm:self-auto">
+                      <div className="flex items-center gap-3 sm:gap-4 self-start sm:self-auto">
                         {ev.relative_velocity_km_s && (
                           <div className="flex flex-col hidden md:flex text-right">
                             <span className="text-[10px] text-muted-foreground uppercase font-mono font-semibold">Rel Speed</span>
