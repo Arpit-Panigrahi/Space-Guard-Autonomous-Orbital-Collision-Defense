@@ -2,8 +2,9 @@ import os
 from pathlib import Path
 
 # Paths
+IS_VERCEL = os.getenv("VERCEL") == "1"
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DATA_DIR = BASE_DIR / "data"
+DATA_DIR = Path("/tmp/space-guard-data") if IS_VERCEL else (BASE_DIR / "data")
 TLE_CACHE_DIR = DATA_DIR / "tle_cache"
 
 # Ensure directories exist

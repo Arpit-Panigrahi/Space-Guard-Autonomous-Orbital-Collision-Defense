@@ -6,6 +6,7 @@ triage). No hardcoded synthetic events.
 """
 from contextlib import asynccontextmanager
 import asyncio
+import os
 from datetime import datetime, timezone
 from typing import List, Dict, Any
 
@@ -33,6 +34,13 @@ from ..models.schemas import ManeuverRequest
 
 SCAN_MAX_SATS = 40      # curated-subset cap — keeps scan under ~5 s on laptop
 SCAN_WINDOW_HOURS = 24  # conjunction lookahead window
+IS_VERCEL = os.getenv("VERCEL") == "1"
+PRETRAIN_ML_ON_STARTUP = os.getenv(
+    "PRETRAIN_ML_ON_STARTUP", "0" if IS_VERCEL else "1"
+).lower() in {"1", "true", "yes", "on"}
+ENABLE_ML_PRESCREEN = os.getenv(
+    "ENABLE_ML_PRESCREEN", "0" if IS_VERCEL else "1"
+).lower() in {"1", "true", "yes", "on"}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -41,10 +49,13 @@ SCAN_WINDOW_HOURS = 24  # conjunction lookahead window
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    loop = asyncio.get_event_loop()
-    print("[Space-Guard] Pre-training ML triage model (5,000 synthetic samples)…")
-    await loop.run_in_executor(None, lambda: ml_triage_model.train(n_samples=5000))
-    print("[Space-Guard] ML model ready. All systems nominal.")
+    if PRETRAIN_ML_ON_STARTUP:
+        loop = asyncio.get_event_loop()
+        print("[Space-Guard] Pre-training ML triage model (5,000 synthetic samples)…")
+        await loop.run_in_executor(None, lambda: ml_triage_model.train(n_samples=5000))
+        print("[Space-Guard] ML model ready. All systems nominal.")
+    else:
+        print("[Space-Guard] Startup ML pre-training disabled.")
     yield
 
 
@@ -125,7 +136,11 @@ def _run_live_scan() -> Dict[str, Any]:
 
     # ── 4. ML pre-screen (annotates ml_prescreen_score on each event) ─────
     if raw_events:
-        raw_events = ml_triage_model.prescreen_events(raw_events)
+        if ENABLE_ML_PRESCREEN:
+            raw_events = ml_triage_model.prescreen_events(raw_events)
+        else:
+            for event in raw_events:
+                event["ml_prescreen_score"] = float(event.get("pc", 0.0))
 
     # ── 5. Historical validation anchor ────────────────────────────────────
     # Always included — real TLEs, same pipeline, verified to exactly match
