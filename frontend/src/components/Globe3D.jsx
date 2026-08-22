@@ -284,6 +284,8 @@ export default function Globe3D({
   // Mouse camera controls
   const isDraggingRef = useRef(false);
   const prevMousePosRef = useRef({ x: 0, y: 0 });
+  const activePointersRef = useRef(new Map());
+  const pinchDistanceRef = useRef(null);
   const targetRotationRef = useRef({ x: 0.25, y: 0.8 });
   const currentRotationRef = useRef({ x: 0.25, y: 0.8 });
   const cameraDistanceRef = useRef(20);
@@ -487,27 +489,66 @@ export default function Globe3D({
     earthParent.add(flashMesh);
     flashMeshRef.current = flashMesh;
 
-    // Mouse Listeners
+    // Pointer + wheel listeners (mouse + touch)
     const dom = renderer.domElement;
+    const previousTouchAction = dom.style.touchAction;
+    dom.style.touchAction = 'none';
 
-    const onMouseDown = (e) => {
-      isDraggingRef.current = true;
-      prevMousePosRef.current = { x: e.clientX, y: e.clientY };
-    };
-
-    const onMouseMove = (e) => {
-      if (!isDraggingRef.current) return;
-      const deltaX = e.clientX - prevMousePosRef.current.x;
-      const deltaY = e.clientY - prevMousePosRef.current.y;
-      prevMousePosRef.current = { x: e.clientX, y: e.clientY };
-
+    const applyRotationDelta = (deltaX, deltaY) => {
       targetRotationRef.current.y += deltaX * 0.005;
       targetRotationRef.current.x += deltaY * 0.005;
       targetRotationRef.current.x = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, targetRotationRef.current.x));
     };
 
-    const onMouseUp = () => {
-      isDraggingRef.current = false;
+    const getPointerDistance = (p1, p2) => Math.hypot(p2.x - p1.x, p2.y - p1.y);
+
+    const onPointerDown = (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      dom.setPointerCapture?.(e.pointerId);
+      activePointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      const points = Array.from(activePointersRef.current.values());
+      if (points.length === 1) {
+        isDraggingRef.current = true;
+        prevMousePosRef.current = { x: e.clientX, y: e.clientY };
+        pinchDistanceRef.current = null;
+      } else if (points.length === 2) {
+        isDraggingRef.current = false;
+        pinchDistanceRef.current = getPointerDistance(points[0], points[1]);
+      }
+    };
+
+    const onPointerMove = (e) => {
+      const prev = activePointersRef.current.get(e.pointerId);
+      if (!prev) return;
+      const next = { x: e.clientX, y: e.clientY };
+      activePointersRef.current.set(e.pointerId, next);
+
+      const points = Array.from(activePointersRef.current.values());
+      if (points.length === 1) {
+        isDraggingRef.current = true;
+        applyRotationDelta(next.x - prev.x, next.y - prev.y);
+      } else if (points.length === 2) {
+        const distance = getPointerDistance(points[0], points[1]);
+        if (pinchDistanceRef.current !== null) {
+          cameraDistanceRef.current += (pinchDistanceRef.current - distance) * 0.03;
+          cameraDistanceRef.current = Math.max(9, Math.min(45, cameraDistanceRef.current));
+        }
+        pinchDistanceRef.current = distance;
+      }
+    };
+
+    const onPointerUp = (e) => {
+      activePointersRef.current.delete(e.pointerId);
+      const points = Array.from(activePointersRef.current.values());
+      if (points.length === 0) {
+        isDraggingRef.current = false;
+        pinchDistanceRef.current = null;
+      } else if (points.length === 1) {
+        isDraggingRef.current = true;
+        prevMousePosRef.current = points[0];
+        pinchDistanceRef.current = null;
+      }
     };
 
     const onWheel = (e) => {
@@ -516,9 +557,10 @@ export default function Globe3D({
       cameraDistanceRef.current = Math.max(9, Math.min(45, cameraDistanceRef.current));
     };
 
-    dom.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
+    dom.addEventListener('pointerdown', onPointerDown);
+    dom.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', onPointerUp);
     dom.addEventListener('wheel', onWheel, { passive: false });
 
     // Handle Window Resize via ResizeObserver
@@ -791,10 +833,14 @@ export default function Globe3D({
     return () => {
       if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
       resizeObserver.disconnect();
-      dom.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
+      dom.removeEventListener('pointerdown', onPointerDown);
+      dom.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      window.removeEventListener('pointercancel', onPointerUp);
       dom.removeEventListener('wheel', onWheel);
+      dom.style.touchAction = previousTouchAction;
+      activePointersRef.current.clear();
+      pinchDistanceRef.current = null;
       if (rendererRef.current && dom) {
         rendererRef.current.dispose();
       }
