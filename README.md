@@ -11,7 +11,7 @@
 
 **A deterministic, physics-grounded platform for autonomous satellite conjunction risk assessment and Clohessy-Wiltshire maneuver planning in Low Earth Orbit.**
 
-🌐 **Live Application:** **[https://space-guard-collision-mitigate.vercel.app](https://space-guard-collision-mitigate.vercel.app/)**
+🌐 **Live Application:** **[https://space-guard-collision-mitigate.vercel.app/](https://space-guard-collision-mitigate.vercel.app/)**
 
 [🌐 Live Demo](https://space-guard-collision-mitigate.vercel.app/) · [🌌 Vision](#vision) · [🔭 Core Theory](#core-theory) · [🏗️ Architecture](#architecture) · [🔬 Risk Matrix](#risk-matrix) · [🧪 2009 Replay](#validation) · [🖥️ Workstations](#workstations) · [🚀 Getting Started](#getting-started) · [🔌 API Reference](#api-reference)
 
@@ -180,7 +180,7 @@ space-guard/
 ## 🚀 Getting Started
 
 ### 🌐 Live Production Application
-The platform is deployed live on Vercel: **[https://space-guard-collision-mitigate.vercel.app](https://space-guard-collision-mitigate.vercel.app/)**
+The platform is deployed live on Vercel: **[https://space-guard-collision-mitigate.vercel.app/](https://space-guard-collision-mitigate.vercel.app/)**
 
 ---
 
